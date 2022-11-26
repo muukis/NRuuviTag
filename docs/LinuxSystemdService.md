@@ -13,6 +13,11 @@ Publish the [NRuuviTag.Cli.Linux](/src/NRuuviTag.Cli.Linux) project using the bu
 ./build.ps1 --target Publish --configuration Release
 ``` 
 
+Fix for PowerShell Script Not Digitally Signed (see [here](https://caiomsouza.medium.com/fix-for-powershell-script-not-digitally-signed-69f0ed518715))
+```pwsh
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
 **Bash**
 
 ```sh

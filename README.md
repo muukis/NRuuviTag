@@ -127,6 +127,12 @@ nruuvitag publish mqtt my-mqtt-service.local:1883 --client-id "MY_CLIENT_ID" --t
 nruuvitag publish az "MY_CONNECTION_STRING" "MY_EVENT_HUB" --batch-size-limit 100
 ```
 
+```
+# Publish readings from nearby devices to a REST API endpoint URL in batches of up to 100 samples
+
+nruuvitag publish rest "MY_API_ENDPOINT_URL" --batch-size-limit 100 --known-devices --trust-ssl
+```
+
 
 # Linux Service
 
