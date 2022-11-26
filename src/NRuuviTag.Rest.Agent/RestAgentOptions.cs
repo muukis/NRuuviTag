@@ -27,18 +27,6 @@ namespace NRuuviTag.Rest {
         public bool TrustSsl { get; set; }
 
         /// <summary>
-        /// The maximum number of samples to add to an API endpoint data batch before publishing the 
-        /// batch to the API endpoint.
-        /// </summary>
-        public int MaximumBatchSize { get; set; } = 50;
-
-        /// <summary>
-        /// The maximum age of an API endpoint data batch (in seconds) before the batch will be 
-        /// published to the API endpoint regardless of size.
-        /// </summary>
-        public int MaximumBatchAge { get; set; } = 60;
-
-        /// <summary>
         /// The fastest rate (in seconds) that values will be sampled at for each observed device. 
         /// Less than zero means that all observed values are immediately passed to the <see cref="RestAgent"/> 
         /// for processing.

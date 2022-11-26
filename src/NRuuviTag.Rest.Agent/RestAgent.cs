@@ -36,16 +36,6 @@ namespace NRuuviTag.Rest {
         private readonly bool _trustSsl;
 
         /// <summary>
-        /// Maximum event data batch size before the batch will be published to the event hub.
-        /// </summary>
-        private readonly int _maximumBatchSize;
-
-        /// <summary>
-        /// Maximum event data batch age (in seconds) before it will be published to the event hub.
-        /// </summary>
-        private readonly int _maximumBatchAge;
-
-        /// <summary>
         /// JSON serializer options for serializing message payloads.
         /// </summary>
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions() {
@@ -87,8 +77,6 @@ namespace NRuuviTag.Rest {
 
             _endpointUrl = options.EndpointUrl;
             _trustSsl = options.TrustSsl;
-            _maximumBatchSize = options.MaximumBatchSize;
-            _maximumBatchAge = options.MaximumBatchAge;
             _getDeviceInfo = options.GetDeviceInfo;
         }
 
@@ -135,7 +123,7 @@ namespace NRuuviTag.Rest {
             }
 
             var stopwatch = Stopwatch.StartNew();
-            var batch = new List<RuuviTagSampleExtended>();
+            var batch = new AverageRuuviTagSamples();
             var currentBatchStartedAt = TimeSpan.Zero;
 
             using var client = new RestClient(options);
@@ -143,15 +131,17 @@ namespace NRuuviTag.Rest {
             async Task PublishBatch() {
                 try {
                     var request = new RestRequest(_endpointUrl, Method.Post);
-                    request.AddJsonBody(batch!.ToArray());
 
-                    var response = await client!.ExecuteAsync(request).ConfigureAwait(false);
+                    var avgSamples = batch!.GetAverageAll();
+                    request.AddJsonBody(avgSamples.ToArray());
+
+                    var response = await client!.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
 
                     if (response.StatusCode != HttpStatusCode.OK) {
                         throw new HttpRequestException($"Invalid endpoint response: {(int) response.StatusCode} ({response.StatusCode})");
                     }
 
-                    batch.Clear();
+                    batch.ClearAll();
                 }
                 catch (Exception e) {
                     Logger.LogError(e, Resources.LogMessage_RestPublishError);
@@ -161,28 +151,28 @@ namespace NRuuviTag.Rest {
             try {
                 await foreach (var item in samples.ConfigureAwait(false)) {
                     var knownDevice = _getDeviceInfo?.Invoke(item.MacAddress!);
-                    batch.Add(RuuviTagSampleExtended.Create(item, knownDevice?.DeviceId, knownDevice?.DisplayName));
+                    batch.Push(RuuviTagSampleExtended.Create(item, knownDevice?.DeviceId, knownDevice?.DisplayName));
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    if (batch.Count == 1) {
-                        // Start of new batch
-                        currentBatchStartedAt = stopwatch.Elapsed;
-                    }
+                    //if (batch.Count == 1) {
+                    //    // Start of new batch
+                    //    currentBatchStartedAt = stopwatch.Elapsed;
+                    //}
 
-                    if (batch.Count < _maximumBatchSize && (stopwatch.Elapsed - currentBatchStartedAt).TotalSeconds < _maximumBatchAge) {
-                        continue;
-                    }
+                    //if (batch.Count < _maximumBatchSize && (stopwatch.Elapsed - currentBatchStartedAt).TotalSeconds < _maximumBatchAge) {
+                    //    continue;
+                    //}
 
-                    await PublishBatch().ConfigureAwait(false);
+                    //await PublishBatch().ConfigureAwait(false);
 
-                    cancellationToken.ThrowIfCancellationRequested();
+                    //cancellationToken.ThrowIfCancellationRequested();
                 }
             }
             catch (OperationCanceledException) {
-                if (batch.Count > 0) {
-                    await PublishBatch().ConfigureAwait(false);
-                }
+                //if (batch.Count > 0) {
+                //    await PublishBatch().ConfigureAwait(false);
+                //}
             }
             finally {
                 Logger.LogInformation(Resources.LogMessage_RestClientStopped);
