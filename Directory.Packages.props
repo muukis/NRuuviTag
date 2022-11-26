@@ -20,6 +20,7 @@
     <PackageVersion Include="MQTTnet.Extensions.ManagedClient" Version="4.1.2.350" />
     <PackageVersion Include="MSTest.TestAdapter" Version="2.2.10" />
     <PackageVersion Include="MSTest.TestFramework" Version="2.2.10" />
+    <PackageVersion Include="RestSharp" Version="108.0.3" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.45.0" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Net.WebSockets.Client" Version="4.3.2" />

@@ -52,6 +52,10 @@ namespace NRuuviTag.Cli.Commands {
                         .WithDescription("Publishes RuuviTag samples to the console as JSON.")
                         .WithExample(new[] { "publish", "console" });
 
+                    branchOptions.AddCommand<PublishRestCommand>("rest")
+                        .WithDescription("Publishes RuuviTag samples to a REST API endpoint URL.")
+                        .WithExample(new[] { "publish", "rest", "\"MY_API_ENDPOINT_URL\"", "--batch-size-limit", "100", "--known-devices", "--trust-ssl" });
+
                     branchOptions.AddCommand<PublishMqttCommand>("mqtt")
                         .WithDescription("Publishes RuuviTag samples to an MQTT broker.")
                         .WithExample(new[] { "publish", "mqtt", "test.mosquitto.org", "--client-id", "\"MY_CLIENT_ID\"", "--sample-rate", "5", "--known-devices" });

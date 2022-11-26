@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NRuuviTag.Rest.Agent\NRuuviTag.Rest.Agent.csproj" />
     <ProjectReference Include="..\NRuuviTag.AzureEventHubs.Agent\NRuuviTag.AzureEventHubs.Agent.csproj" />
     <ProjectReference Include="..\NRuuviTag.Mqtt.Agent\NRuuviTag.Mqtt.Agent.csproj" />
   </ItemGroup>
