@@ -138,7 +138,7 @@ namespace NRuuviTag.Rest {
 
             async Task PublishBatch(bool timerElapsedEvent) {
                 try {
-                    if (avgService.SampleCount == 0) {
+                    if (avgService.SamplesCount == 0) {
                         return;
                     }
 
@@ -146,7 +146,7 @@ namespace NRuuviTag.Rest {
                         timer.Stop();
                     }
 
-                    var avgSamples = avgService.GetAverageAll(true);
+                    var avgSamples = avgService.GetAverageSamplesAll(true);
 
                     var request = new RestRequest(_endpointUrl, Method.Post);
                     request.AddJsonBody(avgSamples.ToArray());
@@ -172,7 +172,7 @@ namespace NRuuviTag.Rest {
                 timer.Start();
                 await foreach (var sample in samples.ConfigureAwait(false)) {
                     var knownDevice = _getDeviceInfo?.Invoke(sample.MacAddress!);
-                    avgService.Add(RuuviTagSampleExtended.Create(sample, knownDevice?.DeviceId, knownDevice?.DisplayName));
+                    avgService.AddSample(RuuviTagSampleExtended.Create(sample, knownDevice?.DeviceId, knownDevice?.DisplayName));
                     cancellationToken.ThrowIfCancellationRequested();
                 }
             }

@@ -6,7 +6,7 @@ namespace NRuuviTag.Rest {
 
         private readonly Dictionary<string?, List<RuuviTagSampleExtended>> _samples = new();
 
-        public int SampleCount {
+        public int SamplesCount {
             get {
                 lock (_samples) {
                     return _samples.Sum(sample => sample.Value.Count);
@@ -14,7 +14,7 @@ namespace NRuuviTag.Rest {
             }
         }
 
-        private List<RuuviTagSampleExtended>? GetAverage(List<RuuviTagSampleExtended>? samples) {
+        private List<RuuviTagSampleExtended>? GetAverageSamples(List<RuuviTagSampleExtended>? samples) {
             switch (samples?.Count) {
                 case null:
                 case 0:
@@ -26,60 +26,33 @@ namespace NRuuviTag.Rest {
             var averageSamples = samples
                 .GroupBy(sample => sample.MacAddress)
                 .Select(deviceSamples => {
-                    var seed = new RuuviTagSampleExtended
-                    {
-                        AccelerationX = 0,
-                        AccelerationY = 0,
-                        AccelerationZ = 0,
-                        BatteryVoltage = 0,
-                        Humidity = 0,
-                        Pressure = 0,
-                        SignalStrength = 0,
-                        Temperature = 0,
-                        TxPower = 0
-                    };
-
-                    var averageSample = deviceSamples.Aggregate(seed, (a, b) => {
-                        a.AccelerationX += b.AccelerationX;
-                        a.AccelerationY += b.AccelerationY;
-                        a.AccelerationZ += b.AccelerationZ;
-                        a.BatteryVoltage += b.BatteryVoltage;
-                        a.Humidity += b.Humidity;
-                        a.Pressure += b.Pressure;
-                        a.SignalStrength += b.SignalStrength;
-                        a.Temperature += b.Temperature;
-                        a.TxPower += b.TxPower;
-                        return a;
-                    });
-
-                    var deviceSamplesCount = deviceSamples.Count();
-                    averageSample.AccelerationX /= deviceSamplesCount;
-                    averageSample.AccelerationY /= deviceSamplesCount;
-                    averageSample.AccelerationZ /= deviceSamplesCount;
-                    averageSample.BatteryVoltage /= deviceSamplesCount;
-                    averageSample.Humidity /= deviceSamplesCount;
-                    averageSample.Pressure /= deviceSamplesCount;
-                    averageSample.SignalStrength /= deviceSamplesCount;
-                    averageSample.Temperature /= deviceSamplesCount;
-                    averageSample.TxPower /= deviceSamplesCount;
-
                     var lastSample = deviceSamples.OrderByDescending(sample => sample.Timestamp).Last();
-                    averageSample.DeviceId = lastSample.DeviceId;
-                    averageSample.DisplayName = lastSample.DisplayName;
-                    averageSample.DataFormat = lastSample.DataFormat;
-                    averageSample.MacAddress = lastSample.MacAddress;
-                    averageSample.MeasurementSequence = lastSample.MeasurementSequence;
-                    averageSample.MovementCounter = lastSample.MovementCounter;
-                    averageSample.Timestamp = lastSample.Timestamp;
-
-                    return averageSample;
+                    return new RuuviTagSampleExtended
+                    {
+                        DeviceId = lastSample.DeviceId,
+                        DisplayName = lastSample.DisplayName,
+                        DataFormat = lastSample.DataFormat,
+                        MacAddress = lastSample.MacAddress,
+                        MeasurementSequence = lastSample.MeasurementSequence,
+                        MovementCounter = lastSample.MovementCounter,
+                        Timestamp = lastSample.Timestamp,
+                        AccelerationX = deviceSamples.Average(sample => sample.AccelerationX),
+                        AccelerationY = deviceSamples.Average(sample => sample.AccelerationY),
+                        AccelerationZ = deviceSamples.Average(sample => sample.AccelerationZ),
+                        BatteryVoltage = deviceSamples.Average(sample => sample.BatteryVoltage),
+                        Humidity = deviceSamples.Average(sample => sample.Humidity),
+                        Pressure = deviceSamples.Average(sample => sample.Pressure),
+                        SignalStrength = deviceSamples.Average(sample => sample.SignalStrength),
+                        Temperature = deviceSamples.Average(sample => sample.Temperature),
+                        TxPower = deviceSamples.Average(sample => sample.TxPower)
+                    };
                 })
                 .ToList();
 
             return averageSamples;
         }
 
-        private void EnsureAdd(RuuviTagSampleExtended sample) {
+        private void EnsureAddSample(RuuviTagSampleExtended sample) {
             if (!_samples.ContainsKey(sample.MacAddress)) {
                 _samples.Add(sample.MacAddress, new List<RuuviTagSampleExtended>());
             }
@@ -87,24 +60,24 @@ namespace NRuuviTag.Rest {
             _samples[sample.MacAddress].Add(sample);
         }
 
-        public void Add(RuuviTagSampleExtended sample) {
+        public void AddSample(RuuviTagSampleExtended sample) {
             lock (_samples) {
-                EnsureAdd(sample);
+                EnsureAddSample(sample);
             }
         }
 
-        public void AddRange(IEnumerable<RuuviTagSampleExtended> samples) {
+        public void AddSampleRange(IEnumerable<RuuviTagSampleExtended> samples) {
             lock (_samples) {
                 foreach (var sample in samples) {
-                    EnsureAdd(sample);
+                    EnsureAddSample(sample);
                 }
             }
         }
 
-        public List<RuuviTagSampleExtended> GetAverageAll(bool purge = false) {
+        public List<RuuviTagSampleExtended> GetAverageSamplesAll(bool purge = false) {
             lock (_samples) {
                 var averageSamples = _samples.Values
-                    .SelectMany(GetAverage)
+                    .SelectMany(GetAverageSamples)
                     .Where(avgSample => avgSample != null)
                     .ToList();
 
@@ -116,7 +89,7 @@ namespace NRuuviTag.Rest {
             }
         }
 
-        public void Purge() {
+        public void PurgeSamplesAll() {
             lock (_samples) {
                 _samples.Clear();
             }
