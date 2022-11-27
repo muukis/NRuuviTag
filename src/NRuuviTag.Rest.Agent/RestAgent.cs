@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 using RestSharp;
+using Timer = System.Timers.Timer;
 
 namespace NRuuviTag.Rest {
 
@@ -34,6 +34,11 @@ namespace NRuuviTag.Rest {
         /// Trust all SSL certificates.
         /// </summary>
         private readonly bool _trustSsl;
+
+        /// <summary>
+        /// Time in seconds to collect samples before calculating average. Works only when value is set higher than zero.
+        /// </summary>
+        private readonly int _averageInterval;
 
         /// <summary>
         /// JSON serializer options for serializing message payloads.
@@ -77,6 +82,7 @@ namespace NRuuviTag.Rest {
 
             _endpointUrl = options.EndpointUrl;
             _trustSsl = options.TrustSsl;
+            _averageInterval = options.AverageInterval;
             _getDeviceInfo = options.GetDeviceInfo;
         }
 
@@ -122,59 +128,59 @@ namespace NRuuviTag.Rest {
                 options.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
             }
 
-            var stopwatch = Stopwatch.StartNew();
-            var batch = new AverageRuuviTagSamples();
-            var currentBatchStartedAt = TimeSpan.Zero;
-
+            var avgService = new AverageSampleService();
             using var client = new RestClient(options);
 
-            async Task PublishBatch() {
+            using var timer = new Timer {
+                AutoReset = true, Enabled = false, Interval = (_averageInterval < 1 ? 1 : _averageInterval) * 1000
+            };
+            timer.Elapsed += async (_, _) => await PublishBatch(true).ConfigureAwait(false);
+
+            async Task PublishBatch(bool timerElapsedEvent) {
                 try {
-                    var request = new RestRequest(_endpointUrl, Method.Post);
-
-                    var avgSamples = batch!.GetAverageAll();
-                    request.AddJsonBody(avgSamples.ToArray());
-
-                    var response = await client!.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
-
-                    if (response.StatusCode != HttpStatusCode.OK) {
-                        throw new HttpRequestException($"Invalid endpoint response: {(int) response.StatusCode} ({response.StatusCode})");
+                    if (avgService.SampleCount == 0) {
+                        return;
                     }
 
-                    batch.ClearAll();
+                    if (timerElapsedEvent) {
+                        timer.Stop();
+                    }
+
+                    var avgSamples = avgService.GetAverageAll(true);
+
+                    var request = new RestRequest(_endpointUrl, Method.Post);
+                    request.AddJsonBody(avgSamples.ToArray());
+
+                    var response = await client.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
+
+                    if (response.StatusCode != HttpStatusCode.OK) {
+                        throw new HttpRequestException(
+                            $"Invalid endpoint response: {(int) response.StatusCode} ({response.StatusCode})");
+                    }
                 }
                 catch (Exception e) {
                     Logger.LogError(e, Resources.LogMessage_RestPublishError);
                 }
+                finally {
+                    if (timerElapsedEvent) {
+                        timer.Start();
+                    }
+                }
             }
 
             try {
-                await foreach (var item in samples.ConfigureAwait(false)) {
-                    var knownDevice = _getDeviceInfo?.Invoke(item.MacAddress!);
-                    batch.Push(RuuviTagSampleExtended.Create(item, knownDevice?.DeviceId, knownDevice?.DisplayName));
-
+                timer.Start();
+                await foreach (var sample in samples.ConfigureAwait(false)) {
+                    var knownDevice = _getDeviceInfo?.Invoke(sample.MacAddress!);
+                    avgService.Add(RuuviTagSampleExtended.Create(sample, knownDevice?.DeviceId, knownDevice?.DisplayName));
                     cancellationToken.ThrowIfCancellationRequested();
-
-                    //if (batch.Count == 1) {
-                    //    // Start of new batch
-                    //    currentBatchStartedAt = stopwatch.Elapsed;
-                    //}
-
-                    //if (batch.Count < _maximumBatchSize && (stopwatch.Elapsed - currentBatchStartedAt).TotalSeconds < _maximumBatchAge) {
-                    //    continue;
-                    //}
-
-                    //await PublishBatch().ConfigureAwait(false);
-
-                    //cancellationToken.ThrowIfCancellationRequested();
                 }
             }
             catch (OperationCanceledException) {
-                //if (batch.Count > 0) {
-                //    await PublishBatch().ConfigureAwait(false);
-                //}
+                await PublishBatch(false).ConfigureAwait(false);
             }
             finally {
+                timer.Stop();
                 Logger.LogInformation(Resources.LogMessage_RestClientStopped);
             }
         }

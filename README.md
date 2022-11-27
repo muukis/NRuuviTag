@@ -128,9 +128,9 @@ nruuvitag publish az "MY_CONNECTION_STRING" "MY_EVENT_HUB" --batch-size-limit 10
 ```
 
 ```
-# Publish readings from nearby devices to a REST API endpoint URL in batches of up to 100 samples
+# Publish readings from nearby devices to a REST API endpoint URL in a single calculated average of samples per device
 
-nruuvitag publish rest "MY_API_ENDPOINT_URL" --batch-size-limit 100 --known-devices --trust-ssl
+nruuvitag publish rest "MY_API_ENDPOINT_URL" --average-interval 600 --known-devices --trust-ssl
 ```
 
 

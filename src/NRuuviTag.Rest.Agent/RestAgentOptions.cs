@@ -27,6 +27,11 @@ namespace NRuuviTag.Rest {
         public bool TrustSsl { get; set; }
 
         /// <summary>
+        /// Time in seconds to collect samples before calculating average. Works only when value is set higher than zero.
+        /// </summary>
+        public int AverageInterval { get; set; }
+
+        /// <summary>
         /// The fastest rate (in seconds) that values will be sampled at for each observed device. 
         /// Less than zero means that all observed values are immediately passed to the <see cref="RestAgent"/> 
         /// for processing.
