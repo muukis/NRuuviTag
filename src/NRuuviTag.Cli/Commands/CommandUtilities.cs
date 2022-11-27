@@ -54,7 +54,7 @@ namespace NRuuviTag.Cli.Commands {
 
                     branchOptions.AddCommand<PublishRestCommand>("rest")
                         .WithDescription("Publishes RuuviTag samples to a REST API endpoint URL.")
-                        .WithExample(new[] { "publish", "rest", "\"MY_API_ENDPOINT_URL\"", "--batch-size-limit", "100", "--known-devices", "--trust-ssl" });
+                        .WithExample(new[] { "publish", "rest", "\"MY_API_ENDPOINT_URL\"", "--average-interval", "60", "--known-devices", "--trust-ssl" });
 
                     branchOptions.AddCommand<PublishMqttCommand>("mqtt")
                         .WithDescription("Publishes RuuviTag samples to an MQTT broker.")

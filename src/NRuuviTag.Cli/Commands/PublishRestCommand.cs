@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NRuuviTag.Mqtt;
 using NRuuviTag.Rest;
 using Spectre.Console.Cli;
 
@@ -91,8 +90,7 @@ namespace NRuuviTag.Cli.Commands {
                 SampleRate = settings.SampleRate,
                 KnownDevicesOnly = settings.KnownDevicesOnly,
                 TrustSsl = settings.TrustSsl,
-                MaximumBatchAge = settings.MaximumBatchAge,
-                MaximumBatchSize = settings.MaximumBatchSize,
+                AverageInterval = settings.AverageInterval,
                 GetDeviceInfo = addr => {
                     lock (this) {
                         return devices.FirstOrDefault(x => string.Equals(addr, x.MacAddress, StringComparison.OrdinalIgnoreCase));
@@ -128,19 +126,14 @@ namespace NRuuviTag.Cli.Commands {
         [Description("Limits the RuuviTag sample rate to the specified number of seconds. Only the most-recent reading for each RuuviTag device will be included in the next API endpoint batch publish. If not specified, all observed samples will be send to the API endpoint.")]
         public int SampleRate { get; set; }
 
+        [CommandOption("--average-interval <INTERVAL>")]
+        [DefaultValue(60)]
+        [Description("Specifies time in seconds to collect samples, before calculating an average value and then will be published to the API endpoint.")]
+        public int AverageInterval { get; set; }
+
         [CommandOption("--trust-ssl")]
         [Description("Specifies if to always trust endpoint SSL certificates.")]
         public bool TrustSsl { get; set; }
-
-        [CommandOption("--batch-size-limit <LIMIT>")]
-        [DefaultValue(50)]
-        [Description("Sets the maximum number of samples that can be added to an API endpoint data batch before the batch will be published to the hub.")]
-        public int MaximumBatchSize { get; set; }
-
-        [CommandOption("--batch-age-limit <LIMIT>")]
-        [DefaultValue(60)]
-        [Description("Sets the maximum age of an API endpoint data batch (in seconds) before the batch will be published to the hub. The age is measured from the time that the first sample is added to the batch.")]
-        public int MaximumBatchAge { get; set; }
 
         [CommandOption("--known-devices")]
         [Description("Specifies if only samples from pre-registered devices should be observed.")]
