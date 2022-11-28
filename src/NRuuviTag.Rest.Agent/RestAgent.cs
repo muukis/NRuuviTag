@@ -132,7 +132,7 @@ namespace NRuuviTag.Rest {
             using var client = new RestClient(options);
 
             using var timer = new Timer {
-                AutoReset = true, Enabled = false, Interval = (_averageInterval < 1 ? 1 : _averageInterval) * 1000
+                AutoReset = true, Enabled = false, Interval = Math.Max(_averageInterval, 1) * 1000
             };
             timer.Elapsed += async (_, _) => await PublishBatch(true).ConfigureAwait(false);
 
@@ -177,6 +177,7 @@ namespace NRuuviTag.Rest {
                 }
             }
             catch (OperationCanceledException) {
+                timer.Stop();
                 await PublishBatch(false).ConfigureAwait(false);
             }
             finally {
