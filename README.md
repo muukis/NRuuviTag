@@ -131,7 +131,8 @@ The agent will POST the endpoint a JSON payload containing an array of [RuuviTag
     "measurementSequence": 0,
     "macAddress": "string"
   }
-]```
+]
+```
 
 
 # Command-Line Application
