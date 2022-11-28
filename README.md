@@ -89,6 +89,51 @@ public async Task AzureEventHubAgent(
 ```
 
 
+# Publishing Samples to a API REST endpoint URL
+
+The NRuuviTag.Rest.Agent ([source](/src/NRuuviTag.Rest.Agent)) can be used to observe RuuviTag broadcasts and forward the samples to a API REST endpoint URL:
+
+```csharp
+public async Task RestAgent(
+  IRuuviTagListener listener,
+  ILoggerFactory? loggerFactory = null,
+  CancellationToken cancellationToken = default
+) {
+  var agentOptions = new RestAgentOptions() {
+    EndpointUrl = "https://MY_FUNCTIONAPP.azurewbsites.net",
+    AverageInterval = 600 // Send average value every 10 minutes
+  };
+  var agent = new RestAgent(listener, agentOptions, loggerFactory?.CreateLogger<RestAgent>());
+  await agent.RunAsync(cancellationToken);
+}
+```
+
+Tip of the day: You are not bound to [Azure](https://azure.microsoft.com/). Create your own API and database where to save data to. Then use [Grafana](https://grafana.com/) to display you data.
+
+The agent will POST the endpoint a JSON payload containing an array of [RuuviTagSampleExtended](/src/NRuuviTag.Core/RuuviTagSampleExtended.cs). Example:
+```js
+[
+  {
+    "deviceId": "string",
+    "displayName": "string",
+    "timestamp": "2022-11-28T08:26:08.781Z",
+    "signalStrength": 0,
+    "dataFormat": 0,
+    "temperature": 0,
+    "humidity": 0,
+    "pressure": 0,
+    "accelerationX": 0,
+    "accelerationY": 0,
+    "accelerationZ": 0,
+    "batteryVoltage": 0,
+    "txPower": 0,
+    "movementCounter": 0,
+    "measurementSequence": 0,
+    "macAddress": "string"
+  }
+]```
+
+
 # Command-Line Application
 
 `nruuvitag` is a command-line tool for [Windows](/src/NRuuviTag.Cli.Windows) and [Linux](/src/NRuuviTag.Cli.Linux) that can scan for nearby RuuviTags, and publish device readings to the console, or to an MQTT server or Azure Event Hub.

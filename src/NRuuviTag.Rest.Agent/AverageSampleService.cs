@@ -23,7 +23,7 @@ namespace NRuuviTag.Rest {
                     return samples;
             }
 
-            var averageSamples = samples
+            return samples
                 .GroupBy(sample => sample.MacAddress)
                 .Select(deviceSamples => {
                     var lastSample = deviceSamples.OrderByDescending(sample => sample.Timestamp).Last();
@@ -48,8 +48,6 @@ namespace NRuuviTag.Rest {
                     };
                 })
                 .ToList();
-
-            return averageSamples;
         }
 
         private void EnsureAddSample(RuuviTagSampleExtended sample) {
