@@ -151,7 +151,7 @@ namespace NRuuviTag.Rest {
                     var request = new RestRequest(_endpointUrl, Method.Post);
                     request.AddJsonBody(avgSamples.ToArray());
 
-                    var response = await client.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
+                    var response = await client.ExecuteAsync(request).ConfigureAwait(false);
 
                     if (response.StatusCode != HttpStatusCode.OK) {
                         throw new HttpRequestException(
