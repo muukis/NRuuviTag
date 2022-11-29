@@ -22,7 +22,10 @@ public async Task RestAgent(
 }
 ```
 
+
 Tip of the day: You are not bound to [Azure](https://azure.microsoft.com/). Create your own API and database where to save data to. Then use [Grafana](https://grafana.com/) to display you data.
+
+![Grafana example](https://github.com/muukis/NRuuviTag/tree/main/src/NRuuviTag.Rest.Agent/grafana.temperature.png)
 
 The agent will POST the endpoint a JSON payload containing an array of [RuuviTagSampleExtended](https://github.com/muukis/NRuuviTag/tree/main/src/NRuuviTag.Core/RuuviTagSampleExtended.cs) objects. Example:
 ```js
