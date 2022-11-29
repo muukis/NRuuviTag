@@ -89,9 +89,9 @@ public async Task AzureEventHubAgent(
 ```
 
 
-# Publishing Samples to an API REST endpoint URL
+# Publishing Samples to a REST API endpoint URL
 
-The [NRuuviTag.Rest.Agent](https://www.nuget.org/packages/NRuuviTag.Rest.Agent) NuGet package ([source](/src/NRuuviTag.Rest.Agent)) can be used to observe RuuviTag broadcasts and forward the samples to an API REST endpoint URL:
+The [NRuuviTag.Rest.Agent](https://www.nuget.org/packages/NRuuviTag.Rest.Agent) NuGet package ([source](/src/NRuuviTag.Rest.Agent)) can be used to observe RuuviTag broadcasts and forward the samples to a REST API endpoint URL:
 
 ```csharp
 public async Task RestAgent(

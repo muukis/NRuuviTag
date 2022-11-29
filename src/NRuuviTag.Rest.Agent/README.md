@@ -3,9 +3,9 @@
 An agent to [NRuuviTag](https://github.com/wazzamatazz/NRuuviTag) application created for interacting with RuuviTag IoT sensors from [Ruuvi](https://www.ruuvi.com/). This agent will collect samples from all sensors for a specified amount of time and then it calculates the average sample value per sensor. The average data is then encapsulated as an array of JSON sample objects and sent to an API endpoint URL using HTTP request POST method.
 
 
-# Publishing Samples to an API REST endpoint URL
+# Publishing Samples to a REST API endpoint URL
 
-The NRuuviTag.Rest.Agent ([source](https://github.com/muukis/NRuuviTag/tree/main/src/NRuuviTag.Rest.Agent)) can be used to observe RuuviTag broadcasts and forward the samples to an API REST endpoint URL:
+The NRuuviTag.Rest.Agent ([source](https://github.com/muukis/NRuuviTag/tree/main/src/NRuuviTag.Rest.Agent)) can be used to observe RuuviTag broadcasts and forward the samples to a REST API endpoint URL:
 
 ```csharp
 public async Task RestAgent(
