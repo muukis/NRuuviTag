@@ -4,6 +4,14 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>NRuuviTag.Rest</RootNamespace>
     <Description>A library that can publish readings from RuuviTag IoT sensors to an API endpoint URL (REST).</Description>
+    <Authors>Mikko Andersson</Authors>
+    <PackageProjectUrl>https://github.com/muukis/NRuuviTag</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/muukis/NRuuviTag</RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Copyright>Copyright © $(CopyrightStartYear)-$([System.DateTime]::UtcNow.Year) Mikko Andersson</Copyright>
+    <Company>Mikko Andersson</Company>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +38,13 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
