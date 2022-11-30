@@ -5,7 +5,7 @@ An agent to [NRuuviTag](https://github.com/wazzamatazz/NRuuviTag) application cr
 
 # Publishing Samples to a REST API endpoint URL
 
-The NRuuviTag.Rest.Agent ([source](https://github.com/muukis/NRuuviTag/tree/main/src/NRuuviTag.Rest.Agent)) can be used to observe RuuviTag broadcasts and forward the samples to a REST API endpoint URL:
+The [NRuuviTag.Rest.Agent](https://www.nuget.org/packages/NRuuviTag.Rest.Agent) NuGet package ([source](/src/NRuuviTag.Rest.Agent)) can be used to observe RuuviTag broadcasts and forward the samples to a REST API endpoint URL:
 
 ```csharp
 public async Task RestAgent(
