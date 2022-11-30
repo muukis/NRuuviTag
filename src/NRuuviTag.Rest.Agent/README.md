@@ -23,7 +23,7 @@ public async Task RestAgent(
 ```
 
 
-Tip of the day: You are not bound to [Azure](https://azure.microsoft.com/). Create your own API and database where to save data to. Then use [Grafana](https://grafana.com/) to display you data.
+Tip of the day: You are not bound to [Azure](https://azure.microsoft.com/). Create your own API and database where to save data to. Then use [Grafana](https://grafana.com/) to display you data. For a *simple example* of a REST API check out this [Azure DevOps project](https://dev.azure.com/muukis/Testi) which was written for testing purposes.
 
 ![Grafana example](https://raw.githubusercontent.com/muukis/NRuuviTag/main/src/NRuuviTag.Rest.Agent/grafana.temperature.png)
 
