@@ -1,6 +1,6 @@
 # NRuuviTag.Rest.Agent
 
-An agent to [NRuuviTag](https://github.com/wazzamatazz/NRuuviTag) application created for interacting with RuuviTag IoT sensors from [Ruuvi](https://www.ruuvi.com/). This agent will collect samples from all sensors for a specified amount of time and then it calculates the average sample value per sensor. The average data is then encapsulated as an array of JSON sample objects and sent to an API endpoint URL using HTTP request POST method.
+An agent to [NRuuviTag](https://github.com/wazzamatazz/NRuuviTag) application created for interacting with RuuviTag IoT sensors from [Ruuvi](https://www.ruuvi.com/). This agent will collect samples from all sensors for a specified amount of time and then it calculates the average sample value per sensor. The average data is then encapsulated to an array of JSON sample objects and sent to a REST API endpoint URL using HTTP request POST method.
 
 
 # Publishing Samples to a REST API endpoint URL
@@ -50,41 +50,3 @@ The agent will POST the endpoint a JSON payload containing an array of [RuuviTag
   }
 ]
 ```
-
-
-# Command-Line Application
-
-`nruuvitag` is a command-line tool for [Windows](https://github.com/muukis/NRuuviTag/tree/main/src/NRuuviTag.Cli.Windows) and [Linux](https://github.com/muukis/NRuuviTag/tree/main/src/NRuuviTag.Cli.Linux) that can scan for nearby RuuviTags, and publish device readings to the console, or to an MQTT server or Azure Event Hub.
-
-> Add `--help` to any command to view help.
-
-Examples:
-
-```
-# Scan for nearby devices
-
-nruuvitag devices scan
-```
-
-```
-# Write sensor readings from all nearby devices to the console
-
-nruuvitag publish console
-```
-
-```
-# Add a device to the known devices list
-
-nruuvitag devices add "AB:CD:EF:01:23:45" --id "bedroom-1" --name "Master Bedroom"
-```
-
-```
-# Publish readings from nearby devices to a REST API endpoint URL in a single calculated average of samples per device
-
-nruuvitag publish rest "MY_API_ENDPOINT_URL" --average-interval 600 --known-devices --trust-ssl
-```
-
-
-# Linux Service
-
-The command-line application can be run as a Linux service using systemd. See [here](https://github.com/muukis/NRuuviTag/tree/main/docs/LinuxSystemdService.md) for details.
