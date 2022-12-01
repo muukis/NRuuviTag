@@ -1,6 +1,6 @@
 # NRuuviTag.Rest.Agent
 
-An agent to [NRuuviTag](https://github.com/wazzamatazz/NRuuviTag) application created for interacting with RuuviTag IoT sensors from [Ruuvi](https://www.ruuvi.com/). This agent will collect samples from all sensors for a specified amount of time and then it calculates the average sample value per sensor. The average data is then encapsulated to an array of JSON sample objects and sent to a REST API endpoint URL using HTTP request POST method.
+A library that can publish readings from RuuviTag IoT sensors from [Ruuvi](https://www.ruuvi.com/) to a REST API endpoint URL. This agent library will collect samples from all sensors for a specified amount of time and then it calculates the average sample value per sensor. The average data is then encapsulated to an array of JSON sample objects and sent to a REST API endpoint URL using HTTP request POST method.
 
 
 # Publishing Samples to a REST API endpoint URL
@@ -21,7 +21,6 @@ public async Task RestAgent(
   await agent.RunAsync(cancellationToken);
 }
 ```
-
 
 Tip of the day: You are not bound to [Azure](https://azure.microsoft.com/). Create your own API and database where to save data to. Then use [Grafana](https://grafana.com/) to display you data. For a *simple example* of a REST API check out this [Azure DevOps project](https://dev.azure.com/muukis/Testi) which was written for testing purposes.
 
