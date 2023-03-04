@@ -123,6 +123,12 @@
   <data name="LogMessage_RestClientStopped" xml:space="preserve">
     <value>Rest client stopped.</value>
   </data>
+  <data name="LogMessage_RestPublishBeginSend" xml:space="preserve">
+    <value>Sending average results.</value>
+  </data>
+  <data name="LogMessage_RestPublishEndSend" xml:space="preserve">
+    <value>Publishing average results finished.</value>
+  </data>
   <data name="LogMessage_RestPublishError" xml:space="preserve">
     <value>Rest publish error.</value>
   </data>

@@ -79,6 +79,24 @@ namespace NRuuviTag.Rest {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sending average results..
+        /// </summary>
+        public static string LogMessage_RestPublishBeginSend {
+            get {
+                return ResourceManager.GetString("LogMessage_RestPublishBeginSend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publishing average results finished..
+        /// </summary>
+        public static string LogMessage_RestPublishEndSend {
+            get {
+                return ResourceManager.GetString("LogMessage_RestPublishEndSend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rest publish error..
         /// </summary>
         public static string LogMessage_RestPublishError {

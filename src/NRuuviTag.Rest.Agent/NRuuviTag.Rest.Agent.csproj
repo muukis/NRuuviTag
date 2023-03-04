@@ -12,6 +12,7 @@
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Copyright>Copyright © $(CopyrightStartYear)-$([System.DateTime]::UtcNow.Year) Mikko Andersson</Copyright>
     <Company>Mikko Andersson</Company>
+    <Version>0.9.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
