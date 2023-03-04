@@ -148,7 +148,10 @@ public class RestAgent : RuuviTagPublisher {
                 request.AddJsonBody(avgSamples.ToArray());
 
                 Logger.LogInformation(
-                    $"{Resources.LogMessage_RestPublishBeginSend} (Samples: {avgSamples.Count} / Tags: {string.Join(", ", avgSamples.Select(sample => sample.DisplayName))})");
+                    $"{Resources.LogMessage_RestPublishBeginSend} (" +
+                    $"Samples: {avgSamples.Count}" +
+                    " / " +
+                    $"Tags: {string.Join(", ", avgSamples.Select(sample => sample.DisplayName).OrderBy(displayName => displayName))})");
 
                 var response = await client.ExecuteAsync(request).ConfigureAwait(false);
 
